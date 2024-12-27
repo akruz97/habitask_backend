@@ -16,5 +16,4 @@ const ApiRouter = Router();
 
 ApiRouter.use('/auth', AuthRouter);
 
-
 export default ApiRouter;

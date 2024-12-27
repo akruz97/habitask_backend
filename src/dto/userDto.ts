@@ -2,7 +2,7 @@ import { ILogin } from "../interfaces/user";
 import MESSAGE_RESPONSE from "../helpers/message";
 import { EncryptPass, VerifyPass } from "../helpers/security";
 import { User } from "../models/user.model"
-
+import { CreateJwtToken } from "../helpers/jsonWebToken";
 
 
 export async function createUser(data: any) {
@@ -57,7 +57,7 @@ export async function loginUser(data: ILogin) {
             }
         }
 
-        let user = await gettUserByEmail(data.email);
+        let user = await getUserByEmail(data.email);
 
         if(!user || !VerifyPass(data.password, user.password)){
             return {
@@ -68,9 +68,29 @@ export async function loginUser(data: ILogin) {
             }
         }
 
+        let token: any = CreateJwtToken({
+            email: user.email,
+            name: user.name,
+            lastname: user.lastname,
+            id: user.id
+        });
 
+        return {
+            status: true,
+            data: {
+                message: 'Autenticación exitosa',
+                token,
+                mode: 'UP'
+            }
+        }
     } catch (error) {
-        
+        console.log(error);
+        return {
+            status: false,
+            data: {
+                message: 'Error al autenticar'
+            }
+        }
     }
 }
 
