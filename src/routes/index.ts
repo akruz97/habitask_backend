@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import AuthRouter from './auth.router';
+import UserRouter from './user.router';
 
 declare module 'express-serve-static-core' {
     interface Request {
@@ -15,5 +16,6 @@ declare module 'express-serve-static-core' {
 const ApiRouter = Router();
 
 ApiRouter.use('/auth', AuthRouter);
+ApiRouter.use('/user', UserRouter);
 
 export default ApiRouter;

@@ -94,6 +94,42 @@ export async function loginUser(data: ILogin) {
     }
 }
 
+export async function getProfileByEmail(email: string) {
+    try {
+        let user = await getUserByEmail(email);
+
+        if(!user) {
+            return {
+                status: false,
+                data: {
+                    message: MESSAGE_RESPONSE.USER_NOT_FOUND
+                }
+            }
+        }
+
+
+        return {
+            status: true,
+            data: {
+                id: user.dataValues.id,
+                name: user.dataValues.name,
+                lastname: user.dataValues.lastname,
+                email: user.dataValues.email,
+            }
+        }
+
+
+    } catch (error: any) {
+        console.log(error);
+        return {
+            status: false,
+            data: {
+                message: MESSAGE_RESPONSE.ERR0R_UNKNOW
+            }
+        }
+    }
+}
+
 export async function getUserByEmail(email: string) {
     let user = await User.findOne({
         where: {
