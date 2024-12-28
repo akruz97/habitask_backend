@@ -141,3 +141,22 @@ export async function getUserByEmail(email: string) {
 
     return user;
 }
+
+
+export async function getListUsers() {
+    let users = await User.findAll({
+        attributes: ['id', 'name', 'lastname']
+    });
+    console.log(users);
+    if(!users.length) {
+        return {
+            status: false,
+            data: []
+        };
+    }
+
+    return {
+        status: true,
+        data: [...users]
+    };
+}

@@ -52,7 +52,7 @@ export async function getMyTasks(userId: number) {
 
     if(!user.tasks){
         return {
-            status: true,
+            status: false,
             data: {
                 message: 'No se pudo obtener las tareas'
             }
@@ -65,9 +65,8 @@ export async function getMyTasks(userId: number) {
     }
 
     } catch (error) {
-        console.log(error);
         return {
-            status: true,
+            status: false,
             data: {
                 message: 'Error. No se pudo obtener las tareas'
             }
