@@ -7,6 +7,7 @@ import { createTask, getMyTasks } from "../dto/task.Dto";
 export async function createTaskController(req: Request, res: Response, next: NextFunction) {
     try {
         let data = req.body;
+        data.user_id = req.user.id;
         console.log('data: ',data);
         let response = await createTask(data);
         return res.json({...response });
