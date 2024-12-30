@@ -145,9 +145,9 @@ export async function getMyTasks(userId: number) {
             { user_asigned: userId }
         ]
     },
-    order: [
-        ['id', 'ASC']
-    ],
+    // order: [
+    //     ['id', 'ASC']
+    // ],
     // offset: 5,
     // limit: 5
    });
