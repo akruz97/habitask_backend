@@ -1,7 +1,6 @@
 import { Sequelize, SequelizeOptions } from 'sequelize-typescript';
 import { User } from '../models/user.model';
 import { Task } from '../models/task.model';
-import { UserTask } from '../models/user_task.model';
 
 const dialectDB = process.env.DIALECT || '';
 const DB_HOST = process.env.DB_HOST;

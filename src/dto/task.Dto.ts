@@ -4,6 +4,7 @@ import moment from "moment";
 import MESSAGE_RESPONSE from "../helpers/message";
 import { getUserById } from "./userDto";
 import { Op } from "sequelize";
+import { sendEmailNotification } from "./emailDto";
 
 
 export async function deleteTask(taskId: number, userId: number) {
@@ -59,7 +60,10 @@ export async function deleteTask(taskId: number, userId: number) {
 export async function markCompleteTask(taskId: number) {
     try {
 
-        await Task.update({
+        let task = await Task.findByPk(taskId);
+        let userAsigned = await getUserById(task.user_asigned_id);
+
+        await task.update({
             completed: true,
             date_completed: moment().format()
         }, {
@@ -67,6 +71,11 @@ export async function markCompleteTask(taskId: number) {
                 id: taskId
             }
         });
+
+        console.log(task.dataValues);
+        console.log(userAsigned.email);
+
+        await sendEmailNotification(`La tarea "${task.title}" ha sido marcada como completada!`, userAsigned.email);
 
         return { 
             status: true,
