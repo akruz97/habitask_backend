@@ -33,21 +33,24 @@ export async function loginUserController(req: Request, res: Response, next: Nex
 }
 
 
-export async function CheckAuthToken(req: Request, res: Response, next: NextFunction) { 
+export function CheckAuthToken(req: Request, res: Response, next: NextFunction) { 
     try {
         const dataToken: any = CheckJwtToken(req.header('x-token') || '');
+        console.log('dataToken: ', dataToken);
         if (dataToken) {
-            let dataUser = await getUserByEmail(dataToken.email);
-
-            if (dataUser) {
-                req.user = {
-                    id: dataUser.id,
-                    email: dataUser.email,
-                    name: dataUser.name,
-                    lastname: dataUser.lastname
+            getUserByEmail(dataToken.email).then(user => {
+                if (user) {
+                    req.user = {
+                        id: user.id,
+                        email: user.email,
+                        name: user.name,
+                        lastname: user.lastname
+                    }
+                    next();
                 }
-                next();
-            }
+            });
+
+            
         } else {
             return res.json({
                 msj: 'Token incorrecto'

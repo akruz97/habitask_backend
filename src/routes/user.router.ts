@@ -8,7 +8,7 @@ import {
 
 const userRouter = Router();
 
-userRouter.get('/profile', CheckAuthToken, getUserProfileController)
 userRouter.get('/all', CheckAuthToken, getListUsersController)
+userRouter.get('/profile', CheckAuthToken, getUserProfileController)
 
 export default userRouter;

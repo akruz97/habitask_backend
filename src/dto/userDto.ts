@@ -40,7 +40,7 @@ export async function createUser(data: any) {
         return {
             status: false,
             data: {
-                // message: error.response.message
+                message: MESSAGE_RESPONSE.SIGNUP_USER_ERROR
             }
         }
     }
@@ -140,6 +140,19 @@ export async function getUserByEmail(email: string) {
     if(!user) return null;
 
     return user;
+}
+
+export async function getUserById(userId: number) {
+    let user = await User.findOne({
+        where: {
+            id: userId
+        },
+        attributes: ['id', 'name', 'lastname', 'email']
+    });
+
+    if(!user) return null;
+
+    return user.dataValues;
 }
 
 
