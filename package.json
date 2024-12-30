@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon -r dotenv/config src/server.ts dotenv_config_path=.env.dev",
+    "start": "node dist/server.js dotenv_config_path=.env.prod",
+    "start:prod": "npm run build && npm run start",
+    "dev": "nodemon -r dotenv/config src/server.ts dotenv_config_path=.env.dev",
+    "prod": "nodemon -r dotenv/config src/server.ts dotenv_config_path=.env.prod",
     "build": "tsc -p tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
