@@ -12,7 +12,7 @@ let option: SequelizeOptions = {};
 let models = [
     User,
     Task,
-    UserTask
+    // UserTask
     ];
 
 if (process.env.NODE_ENV == "dev" || process.env.NODE_ENV == "local") {
@@ -55,7 +55,7 @@ if (process.env.NODE_ENV == "dev" || process.env.NODE_ENV == "local") {
             acquire: 30000,
             idle: 10000
         },
-        // ssl: true,
+        ssl: true,
         models: models
     }
 }

@@ -1,10 +1,8 @@
 import { Task } from "../models/task.model";
 import { ITask } from "../interfaces/task";
 import moment from "moment";
-import { UserTask } from "../models/user_task.model";
 import MESSAGE_RESPONSE from "../helpers/message";
-import { User } from "../models/user.model";
-import { getUserByEmail, getUserById } from "./userDto";
+import { getUserById } from "./userDto";
 import { Op } from "sequelize";
 
 
@@ -18,30 +16,22 @@ export async function deleteTask(taskId: number, userId: number) {
         });
 
 
-        let taskUser = await UserTask.findOne({
-            where: {
-                task_id: taskId,
-                //user_id: userId
-            }
-        })
-
-        if(taskUser.user_id !== userId){
+        if(task.user_id !== userId){
             return { 
                 status: false,
                 data: {
-                    message: 'No puedes eliminar esta tarea, no eres el propietario'
+                    message: MESSAGE_RESPONSE.UNHAUTHORIZED_TASK_DELETE
                 }
             }
         }
 
         if(task.dataValues && !task.dataValues.completed){
-            await taskUser.destroy();
             await task.destroy();
             
             return { 
                 status: true,
                 data: {
-                    message: 'Se ha eliminado la tarea con éxito'
+                    message: MESSAGE_RESPONSE.SUCCESS_TASK_DELETED
                 }
             }
         }
@@ -49,18 +39,17 @@ export async function deleteTask(taskId: number, userId: number) {
         return { 
             status: false,
             data: {
-                message: 'No se ha podido eliminar la tarea, o ya se ha marcado como completada'
+                message: MESSAGE_RESPONSE.CANT_NOT_TASK_DELETED
             }
         }
 
       
 
     } catch (error) {
-        console.log(error);
         return { 
             status: false,
             data: {
-                message: 'No se ha podido eliminar la tarea'
+                message: MESSAGE_RESPONSE.ERROR_TASK_DELETED
             }
         }
     }
@@ -72,7 +61,7 @@ export async function markCompleteTask(taskId: number) {
 
         await Task.update({
             completed: true,
-            date_completed: moment().date().toString()
+            date_completed: moment().format()
         }, {
             where: {
                 id: taskId
@@ -82,15 +71,14 @@ export async function markCompleteTask(taskId: number) {
         return { 
             status: true,
             data: {
-                message: 'Tarea marcado como completada'
+                message: MESSAGE_RESPONSE.TASK_MARKED_COMPLETED
             }
         }
     } catch (error) {
-        console.log(error);
         return { 
             status: false,
             data: {
-                message: 'No se ha podido marcar como completada la tarea'
+                message: MESSAGE_RESPONSE.ERROR_TASK_MARKED_COMPLETED
             }
         }
     }
@@ -104,28 +92,22 @@ export async function createTask(data: ITask) {
     let newTask = await Task.create({
         title: data.title,
         completed: data.completed,
-        created: moment().format()
-    });
-
-    let userTask = await UserTask.create({
+        created: moment().format(),
         user_id: data.user_id,
-        user_asigned: data.user_asigned_id,
-        task_id: newTask.dataValues.id
+        user_asigned_id: data.user_asigned_id
     });
 
-    if(newTask.dataValues && userTask.dataValues){
+    if(newTask.dataValues){
         return {
             status: true,
             data: {
                 message: MESSAGE_RESPONSE.CREATED_TASK_SUCCESS,
-                ...newTask.dataValues,
-                ...userTask.dataValues
+                ...newTask.dataValues
             }
         }
     }
 
     } catch (error) {
-        console.log(error);
         return {
             status: true,
             data: {
@@ -135,31 +117,39 @@ export async function createTask(data: ITask) {
     }
 }
 
-export async function getMyTasks(userId: number) {
+export async function getMyTasks(userId: number, offset: any, limit: any) {
     try {
 
-   let myTasks = await UserTask.findAll({
-    where: {
-        [Op.or]: [
-            { user_id: userId },
-            { user_asigned: userId }
+   let taskFilter = await Task.findAll({
+        where: { 
+            [Op.or]: [
+                {
+                    user_id: userId,
+                   
+                },
+                {
+                    user_asigned_id: userId
+                }
+            ]
+         },
+        attributes: ['id', 'title', 'completed', "user_id" ,    "user_asigned_id"],
+        offset: parseInt(offset),
+        limit: parseInt(limit),
+        order: [
+            ['id', 'ASC']
         ]
-    },
-    // order: [
-    //     ['id', 'ASC']
-    // ],
-    // offset: 5,
-    // limit: 5
    });
+
+
 
     let allTasks = [];
 
-    await Promise.all([...myTasks].map(async item => {
+    await Promise.all([...taskFilter].map(async item => {
 
         let userOwnerId = item.user_id;
-        let userAsignedId = item.user_asigned;
+        let userAsignedId = item.user_asigned_id;
 
-        let taskById = await getTaskById(item.task_id);
+        let taskById = await getTaskById(item.id);
         let user_owner = await getUserById(userOwnerId);
         let user_asigned = await getUserById(userAsignedId);
 
@@ -173,7 +163,7 @@ export async function getMyTasks(userId: number) {
     
     return {
         status: true,
-        data: allTasks
+        data: [...allTasks]
     }
 
     } catch (error) {
@@ -181,7 +171,7 @@ export async function getMyTasks(userId: number) {
         return {
             status: false,
             data: {
-                message: 'Error. No se pudo obtener las tareas'
+                message: MESSAGE_RESPONSE.ERROR_LIST_TASKS
             }
         }
     }

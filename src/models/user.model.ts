@@ -1,4 +1,4 @@
-import { Table, Model, Column, DataType, ForeignKey, BelongsToMany, BelongsTo } from "sequelize-typescript";
+import { Table, Model, Column, DataType, ForeignKey, BelongsToMany, BelongsTo, HasMany } from "sequelize-typescript";
 import { Task } from "./task.model";
 import { UserTask } from "./user_task.model";
 
@@ -43,8 +43,11 @@ export class User extends Model<User>{
     })
     updated!: string;
 
-    @BelongsToMany(() => Task, () => UserTask)
-    tasks: Array<Task & {UserTask: UserTask}>;
+    @HasMany(() => Task)
+    tasks: Task[];
+
+    // @BelongsToMany(() => Task, () => UserTask)
+    // tasks: Array<Task & {UserTask: UserTask}>;
    
 
 }

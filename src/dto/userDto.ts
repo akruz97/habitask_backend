@@ -7,7 +7,6 @@ import { CreateJwtToken } from "../helpers/jsonWebToken";
 
 export async function createUser(data: any) {
     try {
-        console.log(data);
         let existUser = await getUserByEmail(data.email);
 
         if(existUser) {
@@ -36,7 +35,6 @@ export async function createUser(data: any) {
         }
 
     } catch (error: any) {
-        console.log(error);
         return {
             status: false,
             data: {
@@ -52,7 +50,7 @@ export async function loginUser(data: ILogin) {
             return {
                 status: false,
                 data: {
-                    message: 'Los campos son obligatorios'
+                    message: MESSAGE_RESPONSE.FIELDS_REQUIRED
                 }
             }
         }
@@ -63,7 +61,7 @@ export async function loginUser(data: ILogin) {
             return {
                 status: false,
                 data: {
-                    message: 'Error de usuario o password'
+                    message: MESSAGE_RESPONSE.ACCOUNT_NOT_FOUND
                 }
             }
         }
@@ -78,17 +76,16 @@ export async function loginUser(data: ILogin) {
         return {
             status: true,
             data: {
-                message: 'Autenticación exitosa',
+                message: MESSAGE_RESPONSE.SUCCESS_AUTHENTICATION,
                 token,
                 mode: 'UP'
             }
         }
     } catch (error) {
-        console.log(error);
         return {
             status: false,
             data: {
-                message: 'Error al autenticar'
+                message: MESSAGE_RESPONSE.ACCOUNT_NOT_FOUND
             }
         }
     }
@@ -120,7 +117,6 @@ export async function getProfileByEmail(email: string) {
 
 
     } catch (error: any) {
-        console.log(error);
         return {
             status: false,
             data: {
@@ -160,7 +156,6 @@ export async function getListUsers() {
     let users = await User.findAll({
         attributes: ['id', 'name', 'lastname']
     });
-    console.log(users);
     if(!users.length) {
         return {
             status: false,

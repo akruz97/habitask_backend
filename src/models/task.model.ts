@@ -1,4 +1,4 @@
-import { Table, Model, Column, DataType, BelongsToMany } from "sequelize-typescript";
+import { Table, Model, Column, DataType, BelongsToMany, BelongsTo, ForeignKey } from "sequelize-typescript";
 import { User } from "./user.model";
 import { UserTask } from "./user_task.model";
 
@@ -8,6 +8,19 @@ import { UserTask } from "./user_task.model";
 })
 
 export class Task extends Model<Task>{
+
+    @ForeignKey(() => User)
+    @Column({
+        type: DataType.INTEGER,
+    })
+    user_id: number;
+
+    @ForeignKey(() => User)
+    @Column({
+        type: DataType.INTEGER,
+    })
+    user_asigned_id: number;
+
     @Column({
         type: DataType.STRING,
     })
@@ -28,7 +41,13 @@ export class Task extends Model<Task>{
     })
     date_completed: string;
 
-    @BelongsToMany(() => User, () => UserTask)
-    users: Array<User & {UserTask: UserTask}>;
-   
+    // @BelongsToMany(() => User, () => UserTask)
+    // users: Array<User & {UserTask: UserTask}>;
+   @BelongsTo(() => User, { as: 'Owner' })
+   user: User
+
+   @BelongsTo(() => User, { as: 'Asigned' })
+   asigned: User
+
+
 }

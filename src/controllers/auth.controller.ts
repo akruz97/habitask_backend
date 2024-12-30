@@ -7,11 +7,9 @@ import { CheckJwtToken } from "../helpers/jsonWebToken";
 export async function createUserController(req: Request, res: Response, next: NextFunction) {
     try {
         let data = req.body
-        console.log('data: ',data);
         let response = await createUser(data);
         return res.json({...response });
     } catch (error) {
-        console.log(error);
         return res.json({
             message: MESSAGE_RESPONSE.ERR0R_UNKNOW
         })
@@ -20,12 +18,10 @@ export async function createUserController(req: Request, res: Response, next: Ne
 
 export async function loginUserController(req: Request, res: Response, next: NextFunction) {
     try {
-        let data = req.body
-        console.log('data: ',data);
+        let data = req.body;
         let response = await loginUser(data);
         return res.json({...response });
     } catch (error) {
-        console.log(error);
         return res.json({
             message: MESSAGE_RESPONSE.ERR0R_UNKNOW
         })
@@ -36,7 +32,6 @@ export async function loginUserController(req: Request, res: Response, next: Nex
 export function CheckAuthToken(req: Request, res: Response, next: NextFunction) { 
     try {
         const dataToken: any = CheckJwtToken(req.header('x-token') || '');
-        console.log('dataToken: ', dataToken);
         if (dataToken) {
             getUserByEmail(dataToken.email).then(user => {
                 if (user) {

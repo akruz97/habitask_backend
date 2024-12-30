@@ -19,9 +19,6 @@ app.use(urlencoded({ extended: false, limit: '1150mb' }));
 
 const PORT = process.env.PORT
 
-// app.get('/check', async(_req, res) => {
-//     return 'Hello World';
-// });
 connectionDB();
 
 app.get('/status', async(_req, res) => {
@@ -43,4 +40,4 @@ app.use('/api', Routes);
 
 app.listen(PORT, () => {
     console.log(`Server habitask runing ${PORT}`)
-})
+});
