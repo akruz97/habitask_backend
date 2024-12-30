@@ -43,19 +43,19 @@ if (process.env.NODE_ENV == "dev" || process.env.NODE_ENV == "local") {
         database: DB_NAME,
         logging: false,
         port: 5432,
-        dialectOptions: {
-            ssl: {
-               require: true,
-               rejectUnauthorized: false
-            }
-        },
+        // dialectOptions: {
+        //     ssl: {
+        //        require: true,
+        //        rejectUnauthorized: false
+        //     }
+        // },
         pool: {
             max: 5,
             min: 0,
             acquire: 30000,
             idle: 10000
         },
-        ssl: true,
+        // ssl: true,
         models: models
     }
 }
