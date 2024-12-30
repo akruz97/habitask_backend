@@ -34,6 +34,7 @@ if (process.env.NODE_ENV == "dev" || process.env.NODE_ENV == "local") {
         models: models
     }
 } else {
+    console.log('process.env.NODE_ENV: '+process.env.NODE_ENV);
     option = {
         dialect: 'postgres',
         host: DB_HOST,
