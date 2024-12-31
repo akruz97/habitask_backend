@@ -61,28 +61,36 @@ export async function markCompleteTask(taskId: number) {
     try {
 
         let task = await Task.findByPk(taskId);
-        let userAsigned = await getUserById(task.user_asigned_id);
+        let userOwner = await getUserById(task.user_id);
 
-        await task.update({
+        let taskUpdate = await task.update({
             completed: true,
             date_completed: moment().format()
         }, {
             where: {
                 id: taskId
             }
-        });
+        })
 
-        console.log(task.dataValues);
-        console.log(userAsigned.email);
-
-        await sendEmailNotification(`La tarea "${task.title}" ha sido marcada como completada!`, userAsigned.email);
+        if(taskUpdate.dataValues){
+            await sendEmailNotification(`La tarea "${taskUpdate.title}" ha sido marcada como completada!`, userOwner.email);
+            return { 
+                status: true,
+                data: {
+                    message: MESSAGE_RESPONSE.TASK_MARKED_COMPLETED
+                }
+            }
+        }
 
         return { 
             status: true,
             data: {
-                message: MESSAGE_RESPONSE.TASK_MARKED_COMPLETED
+                message: MESSAGE_RESPONSE.ERROR_TASK_MARKED_COMPLETED
             }
         }
+
+
+        
     } catch (error) {
         return { 
             status: false,
