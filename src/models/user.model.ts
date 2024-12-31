@@ -1,6 +1,5 @@
 import { Table, Model, Column, DataType, ForeignKey, BelongsToMany, BelongsTo, HasMany } from "sequelize-typescript";
 import { Task } from "./task.model";
-import { UserTask } from "./user_task.model";
 
 @Table({
     timestamps: false,
@@ -45,9 +44,6 @@ export class User extends Model<User>{
 
     @HasMany(() => Task)
     tasks: Task[];
-
-    // @BelongsToMany(() => Task, () => UserTask)
-    // tasks: Array<Task & {UserTask: UserTask}>;
    
 
 }

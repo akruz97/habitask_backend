@@ -11,7 +11,6 @@ let option: SequelizeOptions = {};
 let models = [
     User,
     Task,
-    // UserTask
     ];
 
 if (process.env.NODE_ENV == "dev" || process.env.NODE_ENV == "local") {
